@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Portfolio</title>
+<meta name="description" content="Stock illustration and vector portfolio.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,100..900;1,62..125,100..900&display=swap" rel="stylesheet">
+
+<style>
+/* ============================================================
+   TOKENS
+   ============================================================ */
+:root{
+  --paper:#E7E8EB;
+  --card:#FFFFFF;
+  --ink:#101114;
+  --muted:#71747D;
+  --line:#D2D4D9;
+  --accent:#1F4BD8;
+  --shade:rgba(16,17,20,.10);
+  --rowh:10px;
+  --gap:18px;
+  --sidebar:300px;
+}
+:root[data-theme="dark"]{
+  --paper:#0D0E11;
+  --card:#181A20;
+  --ink:#EDEEF1;
+  --muted:#868A94;
+  --line:#272A32;
+  --accent:#7D9BFF;
+  --shade:rgba(0,0,0,.5);
+}
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:"Archivo",system-ui,-apple-system,"Segoe UI",sans-serif;
+  font-variation-settings:"wdth" 100;
+  font-size:15px;
+  line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:inherit}
+
+/* ============================================================
+   SHELL
+   ============================================================ */
+.shell{display:flex;align-items:flex-start;min-height:100vh}
+
+.side{
+  width:var(--sidebar);
+  flex:0 0 var(--sidebar);
+  position:sticky;top:0;
+  height:100vh;
+  padding:40px 30px 28px;
+  border-right:1px solid var(--line);
+  display:flex;flex-direction:column;gap:26px;
+  overflow-y:auto;
+}
+
+.name{
+  margin:0;
+  font-size:34px;
+  line-height:.98;
+  font-weight:800;
+  font-variation-settings:"wdth" 88;
+  letter-spacing:-.022em;
+}
+.role{margin:10px 0 0;color:var(--muted);font-size:14px;max-width:24ch}
+
+.meta{display:flex;flex-direction:column;gap:9px;font-size:13.5px}
+.meta div{display:flex;justify-content:space-between;gap:12px;border-bottom:1px dotted var(--line);padding-bottom:8px}
+.meta span:first-child{color:var(--muted)}
+.meta b{font-weight:600;font-variant-numeric:tabular-nums}
+
+.links{display:flex;flex-direction:column;gap:7px;font-size:13.5px}
+.links a{color:var(--accent);text-decoration:none;text-underline-offset:3px;width:fit-content}
+.links a:hover,.links a:focus-visible{text-decoration:underline}
+
+.controls{margin-top:auto;display:flex;flex-direction:column;gap:9px}
+.btn{
+  appearance:none;border:1px solid var(--line);background:transparent;color:var(--ink);
+  font:inherit;font-size:13px;padding:9px 12px;border-radius:7px;cursor:pointer;
+  text-align:left;display:flex;justify-content:space-between;align-items:center;gap:10px;
+}
+.btn:hover{border-color:var(--ink)}
+.btn b{font-weight:600;color:var(--muted)}
+.foot{font-size:11.5px;color:var(--muted);line-height:1.5}
+
+/* ============================================================
+   GRID  (true masonry via grid-row span)
+   ============================================================ */
+.main{flex:1 1 auto;min-width:0;padding:28px}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(250px,1fr));
+  grid-auto-rows:var(--rowh);
+  gap:var(--gap);
+}
+
+figure.item{
+  margin:0;
+  grid-row-end:span 20;
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:10px;
+  overflow:hidden;
+  position:relative;
+  cursor:zoom-in;
+  box-shadow:0 1px 2px var(--shade);
+}
+figure.item img{
+  display:block;width:100%;height:auto;
+  opacity:0;transition:opacity .28s ease;
+}
+figure.item img.in{opacity:1}
+figure.item figcaption{
+  position:absolute;left:8px;bottom:8px;
+  background:var(--ink);color:var(--paper);
+  font-size:11px;font-weight:600;font-variant-numeric:tabular-nums;
+  padding:3px 7px;border-radius:5px;
+  opacity:0;transition:opacity .15s ease;pointer-events:none;
+}
+figure.item:hover figcaption,figure.item:focus-visible figcaption{opacity:1}
+figure.item:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* checkerboard so transparent PNGs read correctly */
+:root[data-alpha="on"] figure.item{
+  background-color:#fff;
+  background-image:
+    linear-gradient(45deg,#E2E3E6 25%,transparent 25%,transparent 75%,#E2E3E6 75%),
+    linear-gradient(45deg,#E2E3E6 25%,transparent 25%,transparent 75%,#E2E3E6 75%);
+  background-size:16px 16px;
+  background-position:0 0,8px 8px;
+}
+
+/* ============================================================
+   STATES
+   ============================================================ */
+.state{
+  max-width:52ch;margin:60px auto;text-align:left;
+  border:1px dashed var(--line);border-radius:12px;padding:26px 28px;
+}
+.state h2{margin:0 0 10px;font-size:19px;font-weight:700;font-variation-settings:"wdth" 92}
+.state p{margin:0 0 12px;color:var(--muted);font-size:14px}
+.state code{
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px;
+  background:var(--card);border:1px solid var(--line);border-radius:5px;padding:1px 5px;
+}
+.state ol{margin:0;padding-left:18px;color:var(--muted);font-size:14px}
+.state li{margin-bottom:6px}
+.state li b{color:var(--ink);font-weight:600}
+.hidden{display:none !important}
+
+.scanbar{
+  height:2px;background:var(--line);border-radius:2px;overflow:hidden;margin-bottom:18px;
+}
+.scanbar i{display:block;height:100%;width:30%;background:var(--accent);
+  animation:sweep 1.05s ease-in-out infinite}
+@keyframes sweep{0%{transform:translateX(-100%)}100%{transform:translateX(400%)}}
+
+/* ============================================================
+   LIGHTBOX
+   ============================================================ */
+.lb{
+  position:fixed;inset:0;z-index:50;display:none;
+  background:rgba(8,9,11,.93);
+  align-items:center;justify-content:center;padding:28px;
+}
+.lb.open{display:flex}
+.lb img{max-width:100%;max-height:calc(100vh - 110px);object-fit:contain;border-radius:6px}
+.lb .bar{
+  position:absolute;left:0;right:0;bottom:0;height:56px;
+  display:flex;align-items:center;justify-content:center;gap:18px;
+  color:#D7D9DE;font-size:13px;font-variant-numeric:tabular-nums;
+}
+.lb button{
+  appearance:none;background:rgba(255,255,255,.1);border:0;color:#fff;
+  font:inherit;font-size:15px;width:38px;height:38px;border-radius:50%;cursor:pointer;
+}
+.lb button:hover{background:rgba(255,255,255,.22)}
+.lb .close{position:absolute;top:18px;right:18px;width:38px;height:38px}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width:860px){
+  .shell{flex-direction:column}
+  .side{
+    width:100%;flex:none;height:auto;position:static;
+    border-right:0;border-bottom:1px solid var(--line);
+    padding:26px 20px 20px;gap:18px;
+  }
+  .controls{margin-top:6px;flex-direction:row;flex-wrap:wrap}
+  .btn{flex:1 1 140px}
+  .main{padding:18px}
+  .grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));--gap:12px}
+  .name{font-size:28px}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.01ms !important;transition-duration:.01ms !important}
+}
+</style>
+</head>
+<body>
+
+<div class="shell">
+
+  <aside class="side">
+    <header>
+      <h1 class="name" id="s-name">Your Name</h1>
+      <p class="role" id="s-role">Vector illustration &amp; graphic design</p>
+    </header>
+
+    <div class="meta">
+      <div><span>Works</span><b id="s-count">—</b></div>
+      <div><span>Based in</span><b id="s-loc">Dhaka, Bangladesh</b></div>
+      <div><span>Licensing</span><b>Royalty-free</b></div>
+    </div>
+
+    <nav class="links" id="s-links"></nav>
+
+    <div class="controls">
+      <button class="btn" id="t-order" type="button">Order <b>Oldest first</b></button>
+      <button class="btn" id="t-alpha" type="button">Transparency <b>Off</b></button>
+      <button class="btn" id="t-theme" type="button">Theme <b>Light</b></button>
+      <p class="foot" id="s-foot">Available for commissions.</p>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="scanbar hidden" id="scan"><i></i></div>
+    <div class="grid" id="grid"></div>
+
+    <section class="state hidden" id="empty">
+      <h2>No images found yet</h2>
+      <p>This page looks for files next to <code>index.html</code>. Add them and refresh — nothing in the code needs changing.</p>
+      <ol>
+        <li>Name your files <b>1.png</b>, <b>2.png</b>, <b>3.png</b> … with no gaps.</li>
+        <li>Put them in the <b>same folder</b> as this file.</li>
+        <li>Commit and push. GitHub Pages takes a minute to rebuild.</li>
+      </ol>
+    </section>
+  </main>
+</div>
+
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Image viewer">
+  <button class="close" id="lb-x" aria-label="Close">✕</button>
+  <img id="lb-img" alt="">
+  <div class="bar">
+    <button id="lb-prev" aria-label="Previous image">‹</button>
+    <span id="lb-cap"></span>
+    <button id="lb-next" aria-label="Next image">›</button>
+  </div>
+</div>
+
+<script>
+/* ============================================================================
+   EDIT THIS BLOCK ONLY
+   ============================================================================ */
+const CONFIG = {
+  name:     "Your Name",
+  role:     "Vector illustration & graphic design",
+  location: "Dhaka, Bangladesh",
+  footer:   "Available for commissions.",
+
+  // Leave the url empty ("") and the link is hidden.
+  links: [
+    { label: "Email",        url: "mailto:you@example.com" },
+    { label: "Adobe Stock",  url: "" },
+    { label: "Magnific",     url: "" },
+    { label: "Behance",      url: "" }
+  ],
+
+  // ---- image detection --------------------------------------------------
+  folder:        "",        // "" = same folder as index.html. Or "images/"
+  extensions:    ["png","jpg","jpeg","webp","svg","gif"],
+  startIndex:    1,
+  maxIndex:      2000,      // safety ceiling
+  missTolerance: 10,        // stop after this many missing numbers in a row
+  batchSize:     14         // how many to probe at once
+};
+/* ========================== end of edit block ============================ */
+
+
+const $ = s => document.querySelector(s);
+const grid = $("#grid");
+const gridStyle = getComputedStyle(grid);
+
+/* ---- sidebar content ---- */
+$("#s-name").textContent = CONFIG.name;
+$("#s-role").textContent = CONFIG.role;
+$("#s-loc").textContent  = CONFIG.location;
+$("#s-foot").textContent = CONFIG.footer;
+document.title = CONFIG.name + " — Portfolio";
+CONFIG.links.filter(l => l.url).forEach(l => {
+  const a = document.createElement("a");
+  a.href = l.url; a.textContent = l.label;
+  if (!l.url.startsWith("mailto:")) { a.target = "_blank"; a.rel = "noopener"; }
+  $("#s-links").appendChild(a);
+});
+
+/* ---- preferences ---- */
+const pref = {
+  get(k, d){ try { return localStorage.getItem(k) ?? d; } catch(e){ return d; } },
+  set(k, v){ try { localStorage.setItem(k, v); } catch(e){} }
+};
+const root = document.documentElement;
+
+function setTheme(v){
+  root.dataset.theme = v;
+  $("#t-theme").querySelector("b").textContent = v === "dark" ? "Dark" : "Light";
+  pref.set("theme", v);
+}
+function setAlpha(v){
+  root.dataset.alpha = v;
+  $("#t-alpha").querySelector("b").textContent = v === "on" ? "On" : "Off";
+  pref.set("alpha", v);
+}
+setTheme(pref.get("theme", matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"));
+setAlpha(pref.get("alpha", "off"));
+
+$("#t-theme").onclick = () => setTheme(root.dataset.theme === "dark" ? "light" : "dark");
+$("#t-alpha").onclick = () => setAlpha(root.dataset.alpha === "on" ? "off" : "on");
+
+let newestFirst = pref.get("order", "old") === "new";
+function paintOrder(){
+  $("#t-order").querySelector("b").textContent = newestFirst ? "Newest first" : "Oldest first";
+  grid.style.flexDirection = "";
+  [...grid.children]
+    .sort((a,b) => newestFirst ? b.dataset.n - a.dataset.n : a.dataset.n - b.dataset.n)
+    .forEach(el => grid.appendChild(el));
+}
+$("#t-order").onclick = () => {
+  newestFirst = !newestFirst;
+  pref.set("order", newestFirst ? "new" : "old");
+  paintOrder();
+};
+
+/* ---- masonry sizing ---- */
+function sizeItem(fig){
+  const gap  = parseFloat(gridStyle.getPropertyValue("gap")) || 18;
+  const rowh = parseFloat(gridStyle.getPropertyValue("grid-auto-rows")) || 10;
+  const h = fig.getBoundingClientRect().height;
+  if (h > 0) fig.style.gridRowEnd = "span " + Math.ceil((h + gap) / (rowh + gap));
+}
+const ro = new ResizeObserver(entries => entries.forEach(e => sizeItem(e.target)));
+
+/* ---- detection ---- */
+const found = [];
+
+function probeOne(url){
+  return new Promise(res => {
+    const img = new Image();
+    img.onload  = () => res(img.naturalWidth ? url : null);
+    img.onerror = () => res(null);
+    img.src = url;
+  });
+}
+async function probeIndex(n){
+  for (const ext of CONFIG.extensions){
+    const url = CONFIG.folder + n + "." + ext;
+    if (await probeOne(url)) return url;
+  }
+  return null;
+}
+
+function addItem(n, url){
+  const fig = document.createElement("figure");
+  fig.className = "item";
+  fig.dataset.n = n;
+  fig.tabIndex = 0;
+  fig.setAttribute("role", "button");
+
+  const img = document.createElement("img");
+  img.src = url;
+  img.alt = CONFIG.name + " — work " + n;
+  img.loading = "lazy";
+  img.decoding = "async";
+  img.addEventListener("load", () => { img.classList.add("in"); sizeItem(fig); });
+
+  const cap = document.createElement("figcaption");
+  cap.textContent = url.split("/").pop();
+
+  fig.append(img, cap);
+  fig.addEventListener("click", () => openLb(found.findIndex(f => f.url === url)));
+  fig.addEventListener("keydown", e => {
+    if (e.key === "Enter" || e.key === " "){ e.preventDefault(); fig.click(); }
+  });
+
+  grid.appendChild(fig);
+  ro.observe(fig);
+  found.push({ n, url });
+  $("#s-count").textContent = found.length;
+}
+
+async function scan(){
+  $("#scan").classList.remove("hidden");
+  let i = CONFIG.startIndex, misses = 0;
+
+  while (i <= CONFIG.maxIndex && misses < CONFIG.missTolerance){
+    const batch = [];
+    for (let k = 0; k < CONFIG.batchSize && i + k <= CONFIG.maxIndex; k++) batch.push(i + k);
+
+    const results = await Promise.all(batch.map(probeIndex));
+
+    for (let k = 0; k < batch.length; k++){
+      if (results[k]){ misses = 0; addItem(batch[k], results[k]); }
+      else { misses++; if (misses >= CONFIG.missTolerance) break; }
+    }
+    i += batch.length;
+  }
+
+  $("#scan").classList.add("hidden");
+  $("#s-count").textContent = found.length;
+  if (!found.length) $("#empty").classList.remove("hidden");
+  else if (newestFirst) paintOrder();
+}
+
+/* ---- lightbox ---- */
+let lbIndex = 0;
+const lb = $("#lb"), lbImg = $("#lb-img"), lbCap = $("#lb-cap");
+
+function openLb(i){
+  if (i < 0 || !found[i]) return;
+  lbIndex = i;
+  lbImg.src = found[i].url;
+  lbImg.alt = "Work " + found[i].n;
+  lbCap.textContent = found[i].url.split("/").pop() + "  ·  " + (i + 1) + " / " + found.length;
+  lb.classList.add("open");
+  document.body.style.overflow = "hidden";
+  $("#lb-x").focus();
+}
+function closeLb(){
+  lb.classList.remove("open");
+  lbImg.src = "";
+  document.body.style.overflow = "";
+}
+function step(d){ openLb((lbIndex + d + found.length) % found.length); }
+
+$("#lb-x").onclick = closeLb;
+$("#lb-prev").onclick = e => { e.stopPropagation(); step(-1); };
+$("#lb-next").onclick = e => { e.stopPropagation(); step(1); };
+lb.addEventListener("click", e => { if (e.target === lb || e.target === lbImg) closeLb(); });
+document.addEventListener("keydown", e => {
+  if (!lb.classList.contains("open")) return;
+  if (e.key === "Escape") closeLb();
+  if (e.key === "ArrowLeft") step(-1);
+  if (e.key === "ArrowRight") step(1);
+});
+
+scan();
+</script>
+</body>
+</html>
